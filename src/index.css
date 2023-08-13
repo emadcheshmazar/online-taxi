@@ -1,13 +1,44 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+.leaflet-popup {
+  bottom: 25px !important;
+  width: 200px;
+}
+.carIconActive {
+  filter: saturate(150%) hue-rotate(160deg);
+}
+.carIconDeactive {
+  filter: saturate(70%);
+}
+.vehicle-info {
+  background-color: red;
+  width: 300px;
+  z-index: 200;
+  position: absolute;
+}
+.backdrop {
+  background-color: #0000002c !important;
+}
+.off-canvas {
+  display: flex;
+  margin: 20px !important;
+  border-radius: 15px !important;
+  width: 500px !important;
+  height: 180px !important;
+  bottom: 0 !important;
+}
+.car-item {
+  cursor: pointer;
 }
