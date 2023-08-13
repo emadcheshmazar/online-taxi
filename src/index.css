@@ -42,3 +42,12 @@ code {
 .car-item {
   cursor: pointer;
 }
+.rights {
+  position: absolute !important;
+  background-color: rgb(255, 184, 184) !important;
+  border-radius: 15px;
+  bottom: 10px;
+  left: 80%;
+  padding: 2px 8px;
+  z-index: 100000 !important;
+}

@@ -1,20 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Popup,
-  Icon,
-  useMap,
-} from "react-leaflet";
+import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import { Card, ListGroup, Offcanvas, ProgressBar } from "react-bootstrap";
 import { Icon as LIcon } from "leaflet";
-import { FaCar, FaExclamationTriangle, FaLocationArrow } from "react-icons/fa";
+import { FaCar, FaLocationArrow } from "react-icons/fa";
 import _ from "lodash";
 import vehiclesData from "./vehicles.json";
 import vehicleIcon from "./car-top-view.png";
 import "leaflet/dist/leaflet.css";
-import axios from "axios";
 
 const initialMapCenter = [53.55, 10.0]; // Hamburg
 
@@ -106,81 +98,87 @@ function App() {
   };
 
   return (
-    <div className="d-flex col-12">
-      <div className="col-4 col-md-3 overflow-auto" style={{ height: "100vh" }}>
-        <Card>
-          {selectedCar && (
-            <Offcanvas
-              show={show}
-              onHide={handleClose}
-              backdropClassName="backdrop"
-              placement="end"
-              className="off-canvas"
-            >
-              <Offcanvas.Header closeButton>
-                <Offcanvas.Title>{selectedCar.plate}</Offcanvas.Title>
-              </Offcanvas.Header>
-              <Offcanvas.Body>
-                <div className="mb-1 d-flex column align-items-center">
-                  <FaLocationArrow style={{ marginRight: "8px" }} />
-                  <span>{selectedCar.address}</span>
-                </div>
+    <>
+      <div className="d-flex col-12">
+        <div
+          className="col-4 col-md-3 overflow-auto"
+          style={{ height: "100vh" }}
+        >
+          <Card>
+            {selectedCar && (
+              <Offcanvas
+                show={show}
+                onHide={handleClose}
+                backdropClassName="backdrop"
+                placement="end"
+                className="off-canvas"
+              >
+                <Offcanvas.Header closeButton>
+                  <Offcanvas.Title>{selectedCar.plate}</Offcanvas.Title>
+                </Offcanvas.Header>
+                <Offcanvas.Body>
+                  <div className="mb-1 d-flex column align-items-center">
+                    <FaLocationArrow style={{ marginRight: "8px" }} />
+                    <span>{selectedCar.address}</span>
+                  </div>
 
-                <div className="mb-1">
-                  <FaCar style={{ marginRight: "3px" }} /> Fuel Level:
-                  <ProgressBar
-                    className="mt-1"
-                    now={selectedCar.fuelLevel}
-                    label={`${selectedCar.fuelLevel}%`}
-                  />
-                </div>
-              </Offcanvas.Body>
-            </Offcanvas>
-          )}
-          <Card.Header className="text-center">List of Drivers</Card.Header>
-          <ListGroup variant="flush">
+                  <div className="mb-1">
+                    <FaCar style={{ marginRight: "3px" }} /> Fuel Level:
+                    <ProgressBar
+                      className="mt-1"
+                      now={selectedCar.fuelLevel}
+                      label={`${selectedCar.fuelLevel}%`}
+                    />
+                  </div>
+                </Offcanvas.Body>
+              </Offcanvas>
+            )}
+            <Card.Header className="text-center">List of Drivers</Card.Header>
+            <ListGroup variant="flush">
+              {cars.map((car, index) => (
+                <CarItem
+                  key={index}
+                  car={car}
+                  onClick={handleCarClick}
+                  isActive={_.isEqual(car, selectedCar)}
+                />
+              ))}
+            </ListGroup>
+          </Card>
+        </div>
+        <div className="col-8 col-md-9">
+          <MapContainer
+            center={initialMapCenter}
+            zoom={13}
+            style={{ height: "100vh", width: "100%" }}
+          >
+            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
             {cars.map((car, index) => (
-              <CarItem
+              <Marker
                 key={index}
-                car={car}
-                onClick={handleCarClick}
-                isActive={_.isEqual(car, selectedCar)}
+                icon={_.isEqual(car, selectedCar) ? carIconActive : carIcon}
+                position={[
+                  car.geoCoordinate.latitude,
+                  car.geoCoordinate.longitude,
+                ]}
+                eventHandlers={{
+                  click: () => {
+                    handleCarClick(car);
+                  },
+                }}
               />
             ))}
-          </ListGroup>
-        </Card>
+            {selectedCar && (
+              <MapWrapper
+                selectedMarker={selectedCar}
+                handleMarkerClick={handleCarClick}
+              />
+            )}
+          </MapContainer>
+        </div>
       </div>
-      <div className="col-8 col-md-9">
-        <MapContainer
-          center={initialMapCenter}
-          zoom={13}
-          style={{ height: "100vh", width: "100%" }}
-        >
-          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-          {cars.map((car, index) => (
-            <Marker
-              key={index}
-              icon={_.isEqual(car, selectedCar) ? carIconActive : carIcon}
-              position={[
-                car.geoCoordinate.latitude,
-                car.geoCoordinate.longitude,
-              ]}
-              eventHandlers={{
-                click: () => {
-                  handleCarClick(car);
-                },
-              }}
-            />
-          ))}
-          {selectedCar && (
-            <MapWrapper
-              selectedMarker={selectedCar}
-              handleMarkerClick={handleCarClick}
-            />
-          )}
-        </MapContainer>
-      </div>
-    </div>
+      <strong className="rights">Developed by Emad Cheshmazar 2023</strong>
+    </>
   );
 }
 
